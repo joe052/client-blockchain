@@ -173,6 +173,7 @@ class Wallet {
 }
 
 const satoshi = new Wallet('satoshi');
+//const wachira = new Wallet('wachira');
 //const bob = new Wallet('bob');
 //const alice = new Wallet('alice');
 //const manu = new Wallet('manu');
@@ -185,9 +186,11 @@ const satoshi = new Wallet('satoshi');
 
 
 satoshi.transactLand(200,'ann');
+//wachira.transactLand(155,'grace');
 
 //console.log(Chain.instance);
 //console.log(JSON.stringify(Chain.instance,null,4));
+
 let chain = Chain.instance.chain;
 
 module.exports = chain;
