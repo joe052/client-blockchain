@@ -1,4 +1,4 @@
-//const chain = require("./progression.js");
+ //const chain = require("./progression.js");
 //const chain = require("./test.js");
 const express = require('express');
 const axios = require('axios');
@@ -42,8 +42,10 @@ app.get('/combined',(req,res)=>{
         master: mast,
         trans: tran
       }
+      
     };
-    res.send(response);
+    res.send(mast);
+    //res.send("my guys...");
   })
   .catch(e =>{
     res.sendStatus({message: e});
