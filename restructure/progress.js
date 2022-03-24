@@ -58,14 +58,20 @@ class Chain {
   }
   
   /*-------------------------------complex----------------------------------------------------*/
+
+  //get chain from api and push transaction
   async getResolve(node,transaction){
     const response = await fetch(node + '/resolve');
     const result = await response.json();
+    let bigChain = [];
     let allChain = this.addArray(result);
     allChain = allChain[1];
-    console.log(allChain.length);
-    allChain.sort();
-    const newChain = allChain[allChain.length - 1];
+    bigChain.push(allChain);
+      //specifying data
+    bigChain = bigChain[0];
+    console.log(bigChain.length);
+    bigChain.sort();
+    const newChain = bigChain[bigChain.length - 1];
     console.log(newChain.length);
     this.addData(newChain,transaction);
     
@@ -83,14 +89,6 @@ class Chain {
   }
   
   /*-------------------------------complex----------------------------------------------------*/
-
-  //fetch chain from api and push transaction
-  async getChain(transaction) {
-    const response = await fetch(myUrl);
-    const data = await response.json();
-    console.log("getting...");
-    this.addData(data,transaction);
-  }
 
   //push new block with transaction to chain
   addData(object,transaction) {
@@ -121,21 +119,21 @@ class Chain {
   }
 
   /*----------------test to get the pure chain only------------------------------------------------*/
-  //get chain
+  
+ //get chain
   async getPchain() {
-    const response = await fetch(myUrl);
-    const data = await response.json();
-    //console.log("getting...");
-    const newChain = this.addPdata(data);
-    //console.log(newChain);
-    return newChain;
-  }
-
-  //push chain
-  addPdata(object) {
-    let newChain = [];
-    newChain.push(object);
-    newChain = newChain[0];
+    const response = await fetch(url + '/resolve');
+    const result = await response.json();
+    let bigChain = [];
+      //shared method addArray() in complex section
+    let allChain = this.addArray(result);
+    allChain = allChain[1];
+    bigChain.push(allChain);
+      //specifying data
+    bigChain = bigChain[0];
+    //console.log(bigChain.length);
+    bigChain.sort();
+    const newChain = bigChain[bigChain.length - 1];
     return newChain;
   }
 
