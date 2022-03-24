@@ -13,10 +13,12 @@ class Nodes {
     }
   }
 
-  resolve(res,blockchain){
+    resolve(res,blockchain){
     let completed = 0;
     let nNodes = this.list.length;
     let response = [];
+    let data = [];
+    let main = [];
     let errCount = 0;
 
     this.list.forEach(node =>{
@@ -29,22 +31,27 @@ class Nodes {
       .then(resp => {
         return resp.json();
       })
-      //return this.returner();
       .then(respBlockchain => {
-        //respBlockchain = this.addPdata(respBlockchain);
-        //if(blockchain.blocks.length < respBlockchain.length){
-        if(Object.keys(blockchain).length < respBlockchain.length){
-          blockchain.updateBlocks(respBlockchain);
-          response.push({synced: node,data: respBlockchain});
+        //console.log(respBlockchain.length);
+        //console.log(blockchain.length);
+        if(blockchain.length < respBlockchain.length){
+          impots.updateBlocks(respBlockchain);
+          //response.push({synced: node,data: respBlockchain});
+          response.push({synced: node});
+          data.push(respBlockchain);
         }else{
-          response.push({noAction: node,data: respBlockchain});
+          //response.push({noAction: node,data: respBlockchain});
+          response.push({noAction: node});
+          data.push(respBlockchain);
         }
 
         if(++completed == nNodes){
           if(errCount == nNodes){
             res.status(500);
           }
-          res.send(response);
+          main.push(response);
+          main.push(data);
+          res.send(main);
         }
       })
       .catch(error => {

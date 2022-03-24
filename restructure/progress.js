@@ -2,6 +2,7 @@
 //const crypto = require('crypto-js');
 const fetch = require('node-fetch');
 const SHA256 = require('crypto-js/sha256');
+const url = 'https://client-blockchain.joeroyalty00.repl.co';
 
 const myUrl = "https://blockchain.joeroyalty00.repl.co/blockchain";
 
@@ -53,8 +54,35 @@ class Chain {
   constructor() {
     
     this.chain = [];
-    this.difficulty = 4;
+    this.difficulty = 3;
   }
+  
+  /*-------------------------------complex----------------------------------------------------*/
+  async getResolve(node,transaction){
+    const response = await fetch(node + '/resolve');
+    const result = await response.json();
+    let allChain = this.addArray(result);
+    allChain = allChain[1];
+    console.log(allChain.length);
+    allChain.sort();
+    const newChain = allChain[allChain.length - 1];
+    console.log(newChain.length);
+    this.addData(newChain,transaction);
+    
+    for(const i of allChain){
+      //console.log(i.length);
+    }  
+  }
+
+  //cleaning
+  addArray(object) {
+    let newChain = [];
+    newChain.push(object);
+    newChain = newChain[0];
+    return newChain;
+  }
+  
+  /*-------------------------------complex----------------------------------------------------*/
 
   //fetch chain from api and push transaction
   async getChain(transaction) {
@@ -86,7 +114,7 @@ class Chain {
     newBlock.mineBlock(this.difficulty);
     console.log(transaction);
     this.chain.push(newBlock);
-    console.log(this.chain);
+    //console.log(this.chain);
     console.log(Object.keys(this.chain).length);
     console.log("\nupdate successfully complete!!");
     //console.log("\nupdate successfully complete!!");
@@ -155,7 +183,8 @@ class Wallet {
 
       if (size >= minimum) {
         const transaction = new Transaction(this.publicKey, receiverPublicKey, size);
-        Chain.instance.getChain(transaction);
+        //Chain.instance.getChain(transaction);
+        Chain.instance.getResolve(url,transaction);
         //console.log(transaction);
       } else {
         console.log(`\nunable to initiate transaction from ${this.publicKey}...minimum transactable size is ${minimum}`);
@@ -195,4 +224,6 @@ let chain = Chain.instance.chain;
 
 module.exports = {
     chain: chain,
+    updateBlocks: blocks => {chain = blocks;},
+    teest: node => {Chain.instance.getResolve(node);}
 }
