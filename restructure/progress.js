@@ -66,12 +66,15 @@ class Chain {
     let bigChain = [];
     let allChain = this.addArray(result);
     allChain = allChain[1];
-    bigChain.push(allChain);
+    //bigChain.push(allChain);
       //specifying data
-    bigChain = bigChain[0];
-    console.log(bigChain.length);
-    bigChain.sort();
-    const newChain = bigChain[bigChain.length - 1];
+    //bigChain = bigChain[0];
+    //console.log(bigChain.length);
+    console.log(allChain.length);
+    //bigChain.sort();
+    allChain.sort();
+    //const newChain = bigChain[bigChain.length - 1];
+    const newChain = allChain[allChain.length - 1];
     console.log(newChain.length);
     this.addData(newChain,transaction);
     
@@ -128,12 +131,14 @@ class Chain {
       //shared method addArray() in complex section
     let allChain = this.addArray(result);
     allChain = allChain[1];
-    bigChain.push(allChain);
+    //bigChain.push(allChain);
       //specifying data
-    bigChain = bigChain[0];
+    //bigChain = bigChain[0];
     //console.log(bigChain.length);
-    bigChain.sort();
-    const newChain = bigChain[bigChain.length - 1];
+    //bigChain.sort();
+    allChain.sort();
+    //const newChain = bigChain[bigChain.length - 1];
+    const newChain = allChain[allChain.length - 1];
     return newChain;
   }
 
