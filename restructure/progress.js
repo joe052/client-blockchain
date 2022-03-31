@@ -55,6 +55,7 @@ class Chain {
     
     this.chain = [];
     this.difficulty = 3;
+    this.genesis = [new Block(null, new Transaction('genesis', 'satoshi', 10000))];
   }
   
   /*-------------------------------complex----------------------------------------------------*/
@@ -63,24 +64,28 @@ class Chain {
   async getResolve(node,transaction){
     const response = await fetch(node + '/resolve');
     const result = await response.json();
-    let bigChain = [];
+    //let bigChain = [];
+      //shared method addArray() in complex section
     let allChain = this.addArray(result);
-    allChain = allChain[1];
-    //bigChain.push(allChain);
-      //specifying data
-    //bigChain = bigChain[0];
-    //console.log(bigChain.length);
-    console.log(allChain.length);
-    //bigChain.sort();
-    allChain.sort();
-    //const newChain = bigChain[bigChain.length - 1];
-    const newChain = allChain[allChain.length - 1];
-    console.log(newChain.length);
-    this.addData(newChain,transaction);
     
-    for(const i of allChain){
-      //console.log(i.length);
-    }  
+    if(allChain.length == 0){
+      
+      //adding transaction to acquired chain
+      this.addTransaction(this.genesis,transaction);
+    }else{
+      console.log(allChain.length);
+      allChain.sort();
+      const newChain = allChain[allChain.length - 1];
+      //console.log(newChain);
+      console.log(newChain.length);
+
+      //adding transaction to acquired chain
+      this.addData(newChain,transaction);
+    
+      for(const i of allChain){
+        //console.log(i.length);
+      }  
+    }
   }
 
   //cleaning
@@ -91,7 +96,7 @@ class Chain {
     return newChain;
   }
   
-  /*-------------------------------complex----------------------------------------------------*/
+  /*-------------------------end of complex----------------------------------------------------*/
 
   //push new block with transaction to chain
   addData(object,transaction) {
@@ -121,31 +126,60 @@ class Chain {
     //console.log("\nupdate successfully complete!!");
   }
 
+  //push new block to genesis incase no chain is available
+  addTransaction(genesis,transaction){
+    this.chain.push(genesis);
+    //picking chain elements only #filtering
+    this.chain = this.chain[0];
+    //creating and mining new block and adding transaction
+    const newBlock = new Block(this.getLatestBlock().hash, transaction);
+    newBlock.mineBlock(this.difficulty);
+    console.log(transaction);
+    this.chain.push(newBlock);
+    console.log(this.chain);
+    console.log(this.chain.length);
+    console.log("\nupdate successfully complete!!");
+  }
+
   /*----------------test to get the pure chain only------------------------------------------------*/
   
  //get chain
   async getPchain() {
     const response = await fetch(url + '/resolve');
     const result = await response.json();
-    let bigChain = [];
+    //let bigChain = [];
       //shared method addArray() in complex section
     let allChain = this.addArray(result);
-    allChain = allChain[1];
-    //bigChain.push(allChain);
-      //specifying data
-    //bigChain = bigChain[0];
-    //console.log(bigChain.length);
-    //bigChain.sort();
+    console.log(allChain.length);
     allChain.sort();
-    //const newChain = bigChain[bigChain.length - 1];
     const newChain = allChain[allChain.length - 1];
+    console.log(newChain);
+    //console.log(newChain.length);
     return newChain;
+
+    // if(allChain.length == 0){
+    //   console.log("please await online node...");
+    //   return this.genesis;
+    // }else{
+    //   console.log(allChain.length);
+    // allChain.sort();
+    // const newChain = allChain[allChain.length - 1];
+    // //console.log(newChain);
+    // //console.log(newChain.length);
+    // return newChain;
+    // }  
   }
 
   returner(){
+    //console.log("returning");
     return this.getPchain();
   }
 /*-----------------------end of test---------------------------------------------*/
+  
+  //get last block
+  getLatestBlock() {
+    return this.chain[this.chain.length - 1];
+  }
 
   //get balance
   async getBalanceOfAddress(address) {
@@ -204,21 +238,15 @@ class Wallet {
   }
 }
 
-const satoshi = new Wallet('satoshi');
+const banda = new Wallet('banda');
 //const wachira = new Wallet('wachira');
-//const bob = new Wallet('bob');
-//const alice = new Wallet('alice');
-//const manu = new Wallet('manu');
-//const joe = new Wallet('joe');
-//const grace = new Wallet('grace');
-//const ann = new Wallet('ann');
-//const isaac = new Wallet('isaac');
-//const peter = new Wallet('peter');
-//const agnes = new Wallet('agnes');
 
 
-satoshi.transactLand(200,'ann');
+
+banda.transactLand(500,'peter');
 //wachira.transactLand(155,'grace');
+
+//Chain.instance.getPchain();
 
 //console.log(Chain.instance);
 //console.log(JSON.stringify(Chain.instance,null,4));

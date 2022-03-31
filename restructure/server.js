@@ -49,6 +49,10 @@ app.get('/resolve',(req,res) =>{
   nodes.resolve(res, impots.chain);
 });
 
+app.get('/allNodes',(req,res) =>{
+  nodes.allNodes(res);
+});
+
 //console.log(impots.chain);
 //nodes.broadcast();
 //impots.teest(myUrl);
