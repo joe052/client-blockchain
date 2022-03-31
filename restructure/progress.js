@@ -55,7 +55,6 @@ class Chain {
     
     this.chain = [];
     this.difficulty = 3;
-    this.genesis = [new Block(null, new Transaction('genesis', 'satoshi', 10000))];
   }
   
   /*-------------------------------complex----------------------------------------------------*/
@@ -67,25 +66,18 @@ class Chain {
     //let bigChain = [];
       //shared method addArray() in complex section
     let allChain = this.addArray(result);
-    
-    if(allChain.length == 0){
-      
-      //adding transaction to acquired chain
-      this.addTransaction(this.genesis,transaction);
-    }else{
-      console.log(allChain.length);
-      allChain.sort();
-      const newChain = allChain[allChain.length - 1];
-      //console.log(newChain);
-      console.log(newChain.length);
+    console.log(allChain.length);
+    allChain.sort();
+    const newChain = allChain[allChain.length - 1];
+    //console.log(newChain);
+    console.log(newChain.length);
 
-      //adding transaction to acquired chain
-      this.addData(newChain,transaction);
+    //adding transaction to acquired chain
+    this.addData(newChain,transaction);
     
-      for(const i of allChain){
-        //console.log(i.length);
-      }  
-    }
+    for(const i of allChain){
+      //console.log(i.length);
+    }  
   }
 
   //cleaning
@@ -96,7 +88,7 @@ class Chain {
     return newChain;
   }
   
-  /*-------------------------end of complex----------------------------------------------------*/
+  /*-------------------------------complex----------------------------------------------------*/
 
   //push new block with transaction to chain
   addData(object,transaction) {
@@ -126,21 +118,6 @@ class Chain {
     //console.log("\nupdate successfully complete!!");
   }
 
-  //push new block to genesis incase no chain is available
-  addTransaction(genesis,transaction){
-    this.chain.push(genesis);
-    //picking chain elements only #filtering
-    this.chain = this.chain[0];
-    //creating and mining new block and adding transaction
-    const newBlock = new Block(this.getLatestBlock().hash, transaction);
-    newBlock.mineBlock(this.difficulty);
-    console.log(transaction);
-    this.chain.push(newBlock);
-    console.log(this.chain);
-    console.log(this.chain.length);
-    console.log("\nupdate successfully complete!!");
-  }
-
   /*----------------test to get the pure chain only------------------------------------------------*/
   
  //get chain
@@ -153,33 +130,15 @@ class Chain {
     console.log(allChain.length);
     allChain.sort();
     const newChain = allChain[allChain.length - 1];
-    console.log(newChain);
-    //console.log(newChain.length);
+    //console.log(newChain);
+    console.log(newChain.length);
     return newChain;
-
-    // if(allChain.length == 0){
-    //   console.log("please await online node...");
-    //   return this.genesis;
-    // }else{
-    //   console.log(allChain.length);
-    // allChain.sort();
-    // const newChain = allChain[allChain.length - 1];
-    // //console.log(newChain);
-    // //console.log(newChain.length);
-    // return newChain;
-    // }  
   }
 
   returner(){
-    //console.log("returning");
     return this.getPchain();
   }
 /*-----------------------end of test---------------------------------------------*/
-  
-  //get last block
-  getLatestBlock() {
-    return this.chain[this.chain.length - 1];
-  }
 
   //get balance
   async getBalanceOfAddress(address) {
@@ -212,8 +171,8 @@ class Wallet {
 
   async transactLand(size, receiverPublicKey) {
     let minimum = this.minimum;
-    let availableLand =  await Chain.instance.getBalanceOfAddress(this.publicKey);
-    //let availableLand = 500;
+    //let availableLand =  await Chain.instance.getBalanceOfAddress(this.publicKey);
+    let availableLand = 500;
     //console.log(availableLand);
 
     if (availableLand > 0 && availableLand >= size) {
@@ -238,15 +197,21 @@ class Wallet {
   }
 }
 
-const banda = new Wallet('banda');
+const satoshi = new Wallet('satoshi');
 //const wachira = new Wallet('wachira');
+//const bob = new Wallet('bob');
+//const alice = new Wallet('alice');
+//const manu = new Wallet('manu');
+//const joe = new Wallet('joe');
+//const grace = new Wallet('grace');
+//const ann = new Wallet('ann');
+//const isaac = new Wallet('isaac');
+//const peter = new Wallet('peter');
+//const agnes = new Wallet('agnes');
 
 
-
-banda.transactLand(500,'peter');
+satoshi.transactLand(200,'banda');
 //wachira.transactLand(155,'grace');
-
-//Chain.instance.getPchain();
 
 //console.log(Chain.instance);
 //console.log(JSON.stringify(Chain.instance,null,4));
