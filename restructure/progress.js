@@ -60,24 +60,14 @@ class Chain {
   /*-------------------------------complex----------------------------------------------------*/
 
   //get chain from api and push transaction
-  async getResolve(node,transaction){
-    const response = await fetch(node + '/resolve');
-    const result = await response.json();
-    //let bigChain = [];
-      //shared method addArray() in complex section
-    let allChain = this.addArray(result);
-    console.log(allChain.length);
-    allChain.sort();
-    const newChain = allChain[allChain.length - 1];
+  async getResolve(transaction){
+    //get the chain first
+    const newChain = await this.getPchain();
     //console.log(newChain);
     console.log(newChain.length);
 
     //adding transaction to acquired chain
     this.addData(newChain,transaction);
-    
-    for(const i of allChain){
-      //console.log(i.length);
-    }  
   }
 
   //cleaning
@@ -171,8 +161,8 @@ class Wallet {
 
   async transactLand(size, receiverPublicKey) {
     let minimum = this.minimum;
-    //let availableLand =  await Chain.instance.getBalanceOfAddress(this.publicKey);
-    let availableLand = 500;
+    let availableLand =  await Chain.instance.getBalanceOfAddress(this.publicKey);
+    //let availableLand = 500;
     //console.log(availableLand);
 
     if (availableLand > 0 && availableLand >= size) {
@@ -180,7 +170,7 @@ class Wallet {
       if (size >= minimum) {
         const transaction = new Transaction(this.publicKey, receiverPublicKey, size);
         //Chain.instance.getChain(transaction);
-        Chain.instance.getResolve(url,transaction);
+        Chain.instance.getResolve(transaction);
         //console.log(transaction);
       } else {
         console.log(`\nunable to initiate transaction from ${this.publicKey}...minimum transactable size is ${minimum}`);
@@ -189,7 +179,7 @@ class Wallet {
       }
 
     } else {
-      console.log("\ninsufficient land size to initiate transaction from", this.publicKey);
+      console.log(`\ninsufficient land size to initiate transaction from ${this.publicKey} available balance is ${availableLand}`);
       const oldChain = await Chain.instance.returner();
       Chain.instance.chain.push(oldChain);
     }
@@ -197,20 +187,9 @@ class Wallet {
   }
 }
 
-const satoshi = new Wallet('satoshi');
-//const wachira = new Wallet('wachira');
-//const bob = new Wallet('bob');
-//const alice = new Wallet('alice');
-//const manu = new Wallet('manu');
-//const joe = new Wallet('joe');
-//const grace = new Wallet('grace');
-//const ann = new Wallet('ann');
-//const isaac = new Wallet('isaac');
-//const peter = new Wallet('peter');
-//const agnes = new Wallet('agnes');
+const banda = new Wallet('banda');
 
-
-satoshi.transactLand(200,'banda');
+banda.transactLand(200,'testing');
 //wachira.transactLand(155,'grace');
 
 //console.log(Chain.instance);
