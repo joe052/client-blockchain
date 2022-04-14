@@ -2,9 +2,9 @@
 //const crypto = require('crypto-js');
 const fetch = require('node-fetch');
 const SHA256 = require('crypto-js/sha256');
-const url = "https://client-blockchain.joeroyalty00.repl.co";
+const url = 'https://client-blockchain.joeroyalty00.repl.co';
 
-const myUrl = "https://client-blockchain.joeroyalty00.repl.co/blockchain";
+const myUrl = "https://blockchain.joeroyalty00.repl.co/blockchain";
 
 class Transaction {
   constructor(owner, receiver, size) {
@@ -54,7 +54,6 @@ class Chain {
   constructor() {
     
     this.chain = [];
-    this.transArr = [];
     this.difficulty = 3;
   }
   
@@ -64,33 +63,12 @@ class Chain {
   async getResolve(transaction){
     //get the chain first
     const newChain = await this.getPchain();
-    if(newChain == null){
-      const genesis = [new Block(null, new Transaction('genesis', 'satoshi', 10000))];
-      
-      //adding transaction to acquired chain
-      this.addTransaction(genesis,transaction);
-    }else{
-      console.log(newChain.length);
-
-      //adding transaction to acquired chain
-      const chain = this.addData2(newChain,transaction); 
-
-      //filtering transactions
-      //this.filterTransaction(chain);
-    }
-  }
-  async getResolveTest(transaction){
-    //get the chain first
-    const newChain = await this.getPchain();
+    //console.log(newChain);
     console.log(newChain.length);
 
     //adding transaction to acquired chain
-    const chain = this.addData2(newChain,transaction); 
-
-    //filtering transactions
-    this.filterTransaction(chain);
+    this.addData(newChain,transaction);
   }
-
 
   //cleaning
   addArray(object) {
@@ -100,7 +78,7 @@ class Chain {
     return newChain;
   }
   
-  /*-------------------------end of complex----------------------------------------------------*/
+  /*-------------------------------complex----------------------------------------------------*/
 
   //push new block with transaction to chain
   addData(object,transaction) {
@@ -108,8 +86,8 @@ class Chain {
     
     //picking chain elements only #filtering
     this.chain = this.chain[0];
-    
-    console.log(this.chain);
+    console.log("This is the chain i fetched:");
+    //console.log(this.chain);
     
     //special .length for objects...checking length of fetched chain
     console.log(Object.keys(this.chain).length);
@@ -127,58 +105,7 @@ class Chain {
     //console.log(this.chain);
     console.log(Object.keys(this.chain).length);
     console.log("\nupdate successfully complete!!");
-    return this.chain;
-  }
-
-  addData2(object,transaction) {
-    //const response = await fetch(url + '/resolve');
-    let setup = [];
-    setup.push(object);
-   
-    //picking chain elements only #filtering
-    setup = setup[0];
-    //setup = setup[0];
-      
-    console.log("This is the chain i fetched:");
-    //console.log(setup);
-
-    //checking length of fetched chain
-    console.log(setup.length);
-
-    //getting latest block of chain
-    const latest = setup[Object.keys(setup).length -1];
-    //console.log("\nbelow lies the latest")
-    //console.log(latest.hash);
-
-    //creating and mining new block and adding transaction
-    const newBlock = new Block(latest.hash, transaction);
-    newBlock.mineBlock(this.difficulty);
-    console.log(transaction);
-    setup.push(newBlock);
-    //console.log(setup);
-    //console.log(Object.keys(setup).length);
-    console.log(`setups length is ${setup.length}`);
-  
-    //pushing update to blockchain
-    if (Array.isArray(this.chain)) {
-
-      //emptying previous array
-      while(this.chain.length){
-        this.chain.pop();
-      } 
-
-      //pushing new array
-      for(const x in setup){
-        const data = setup[x];
-        this.chain.push(data);
-      }
-      //this.chain.push(setup);
-    }
-
-    //console.log(this.chain); 
-    console.log(`blockchains length is ${this.chain.length}`);
-    console.log("\nupdate successfully complete!!");
-    return this.chain;
+    //console.log("\nupdate successfully complete!!");
   }
 
   /*----------------test to get the pure chain only------------------------------------------------*/
@@ -199,33 +126,9 @@ class Chain {
   }
 
   returner(){
-    //console.log("returning");
     return this.getPchain();
   }
 /*-----------------------end of test---------------------------------------------*/
-  
-  //get last block
-  getLatestBlock() {
-    return this.chain[this.chain.length - 1];
-  }
-  
-  getLatestBlock2(array) {
-    return array[array.length - 1];
-  }
-
-  //filter transactions only from chain
-  filterTransaction(chain){
-    const arrTrans = [];
-    //const chain = await this.returner();
-    for(const block of chain){
-      const trans = block.transaction;
-      arrTrans.push(trans);
-    }
-    //const update = arrTrans[arrTrans.length - 1];
-    this.transArr.push(arrTrans);
-    console.log(`transactions are ${this.transArr.length}`);
-    return this.transArr;
-  }
 
   //get balance
   async getBalanceOfAddress(address) {
@@ -246,28 +149,20 @@ class Chain {
     //console.log(balance);
   }
 
-  async chainSender(res){
-    //res.send(this.chain);
-  }
-
 }
 
 class Wallet {
 
   constructor(publicKey) {
     this.publicKey = publicKey;
-    this.minimum = 10;
+    this.minimum = 100;
     //this.bal = bal;
   }
 
   async transactLand(size, receiverPublicKey) {
-    let availableLand;
     let minimum = this.minimum;
-       //check if chain is available
-    const newChain = await Chain.instance.getPchain();
-    
-    availableLand =  await Chain.instance.getBalanceOfAddress(this.publicKey);
-    
+    let availableLand =  await Chain.instance.getBalanceOfAddress(this.publicKey);
+    //let availableLand = 500;
     //console.log(availableLand);
 
     if (availableLand > 0 && availableLand >= size) {
@@ -275,7 +170,7 @@ class Wallet {
       if (size >= minimum) {
         const transaction = new Transaction(this.publicKey, receiverPublicKey, size);
         //Chain.instance.getChain(transaction);
-        Chain.instance.getResolveTest(transaction);
+        Chain.instance.getResolve(transaction);
         //console.log(transaction);
       } else {
         console.log(`\nunable to initiate transaction from ${this.publicKey}...minimum transactable size is ${minimum}`);
@@ -284,7 +179,7 @@ class Wallet {
       }
 
     } else {
-      console.log("\ninsufficient land size to initiate transaction from", this.publicKey);
+      console.log(`\ninsufficient land size to initiate transaction from ${this.publicKey} available balance is ${availableLand}`);
       const oldChain = await Chain.instance.returner();
       Chain.instance.chain.push(oldChain);
     }
@@ -292,26 +187,18 @@ class Wallet {
   }
 }
 
-//const satoshi = new Wallet('satoshi');
-//const wachira = new Wallet('wachira');
+const banda = new Wallet('neville');
 
-
-
-//satoshi.transactLand(800,'tredmill');
-//Chain.instance.filterTransaction();
-
-//Chain.instance.getPchain();
+banda.transactLand(200,'peter');
+//wachira.transactLand(155,'grace');
 
 //console.log(Chain.instance);
 //console.log(JSON.stringify(Chain.instance,null,4));
 
 let chain = Chain.instance.chain;
-let transArr = Chain.instance.transArr;
 
 module.exports = {
     chain: chain,
     updateBlocks: blocks => {chain = blocks;},
-    transactions: transArr,
-    wallet: Wallet,
-    mega: Chain
+    teest: node => {Chain.instance.getResolve(node);}
 }

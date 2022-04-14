@@ -4,7 +4,6 @@
 // import{fetch} from ('node-fetch');
 
 let impots = require("./progress.js");
-const User = require("./user.js");
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 8000;
@@ -12,14 +11,6 @@ const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 
 const Nodes = require('./nodes.js');
-const Chain = impots.mega;
-let status;
-
-/*if(impots.chain.length !== 0){
-  impots.chain = impots.chain[0];
-}*/
-
-console.log(impots.chain);
 
 // Load env vars
 const url = process.env.URL || '0.0.0.0';
@@ -31,11 +22,9 @@ const myUrl = 'https://client-blockchain.joeroyalty00.repl.co';
 app.use(bodyParser.urlencoded({ limit: '5000mb', extended: true, parameterLimit: 100000000000 }));
 app.use(express.json());
 
-app.use(express.static('restructure'));
+//app.use(express.static('newProject'));
 
 let nodes = new Nodes(url, port);
-let chain = new Chain();
-
 
 //testing my server with postman
 app.post('/data', (req, res) => {
@@ -47,34 +36,17 @@ app.get('/', (req, res) => {
 });
 
 let chainM = [];
-app.get('/blockchain',(req,res) =>{
-  res.send(impots.chain);
-});
 
-app.get('/blockchains',(req,res) =>{
-  chain.chainSender(res);
+app.get('/blockchain', (req, res) => {
+  res.send(impots.chain[0]);
 });
 
 app.get('/transactions', (req, res) => {
-  //const transactions = chain.filterTransaction(impots.chain);
-  res.send(impots.transactions);
+  res.send(impots.trans);
 });
 
 app.get('/resolve',(req,res) =>{
   nodes.resolve(res, impots.chain);
-});
-
-app.get('/allNodes',(req,res) =>{
-  nodes.allNodes(res);
-});
-
-app.post('/stuff',(req,res)=>{
-  console.log('receiving request');
-  console.log(req.body);
-  const data = req.body;
-  let user = new User('banda');
-  user.transact(data);
-  status = true;
 });
 
 //console.log(impots.chain);
