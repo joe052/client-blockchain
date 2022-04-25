@@ -64,28 +64,11 @@ class Chain {
   async getResolve(transaction){
     //get the chain first
     const newChain = await this.getPchain();
-    if(newChain == null){
-      const genesis = [new Block(null, new Transaction('genesis', 'satoshi', 10000))];
-      
-      //adding transaction to acquired chain
-      this.addTransaction(genesis,transaction);
-    }else{
-      console.log(newChain.length);
-
-      //adding transaction to acquired chain
-      const chain = this.addData2(newChain,transaction); 
-
-      //filtering transactions
-      //this.filterTransaction(chain);
-    }
-  }
-  async getResolveTest(transaction){
-    //get the chain first
-    const newChain = await this.getPchain();
+    console.log("recent blockchain update in use has blocks:");
     console.log(newChain.length);
 
     //adding transaction to acquired chain
-    const chain = this.addData2(newChain,transaction); 
+    const chain = this.addData(newChain,transaction); 
 
     //filtering transactions
     this.filterTransaction(chain);
@@ -104,33 +87,6 @@ class Chain {
 
   //push new block with transaction to chain
   addData(object,transaction) {
-    this.chain.push(object);
-    
-    //picking chain elements only #filtering
-    this.chain = this.chain[0];
-    
-    console.log(this.chain);
-    
-    //special .length for objects...checking length of fetched chain
-    console.log(Object.keys(this.chain).length);
-
-    //getting latest block of chain
-    const latest = this.chain[Object.keys(this.chain).length -1];
-    //console.log("\nbelow lies the latest")
-    //console.log(latest.hash);
-
-    //creating and mining new block and adding transaction
-    const newBlock = new Block(latest.hash, transaction);
-    newBlock.mineBlock(this.difficulty);
-    console.log(transaction);
-    this.chain.push(newBlock);
-    //console.log(this.chain);
-    console.log(Object.keys(this.chain).length);
-    console.log("\nupdate successfully complete!!");
-    return this.chain;
-  }
-
-  addData2(object,transaction) {
     //const response = await fetch(url + '/resolve');
     let setup = [];
     setup.push(object);
@@ -190,11 +146,10 @@ class Chain {
     //let bigChain = [];
       //shared method addArray() in complex section
     let allChain = this.addArray(result);
+    console.log("available chains are:");
     console.log(allChain.length);
     allChain.sort();
     const newChain = allChain[allChain.length - 1];
-    //console.log(newChain);
-    //console.log(newChain.length);
     return newChain;
   }
 
@@ -222,7 +177,18 @@ class Chain {
       arrTrans.push(trans);
     }
     //const update = arrTrans[arrTrans.length - 1];
-    this.transArr.push(arrTrans);
+    
+    //emptying previous array
+    while(this.transArr.length){
+      this.transArr.pop();
+    } 
+
+    //pushing new array
+    for(const x in arrTrans){
+      const data = arrTrans[x];
+      this.transArr.push(data);
+    }
+    
     console.log(`transactions are ${this.transArr.length}`);
     return this.transArr;
   }
@@ -275,35 +241,18 @@ class Wallet {
       if (size >= minimum) {
         const transaction = new Transaction(this.publicKey, receiverPublicKey, size);
         //Chain.instance.getChain(transaction);
-        Chain.instance.getResolveTest(transaction);
+        Chain.instance.getResolve(transaction);
         //console.log(transaction);
       } else {
         console.log(`\nunable to initiate transaction from ${this.publicKey}...minimum transactable size is ${minimum}`);
-        const oldChain = await Chain.instance.returner();
-        Chain.instance.chain.push(oldChain);
       }
 
     } else {
-      console.log("\ninsufficient land size to initiate transaction from", this.publicKey);
-      const oldChain = await Chain.instance.returner();
-      Chain.instance.chain.push(oldChain);
+      console.log(`\ninsufficient land size to initiate transaction from ${this.publicKey} available balance is ${availableLand}`);
     }
 
   }
 }
-
-//const satoshi = new Wallet('satoshi');
-//const wachira = new Wallet('wachira');
-
-
-
-//satoshi.transactLand(800,'tredmill');
-//Chain.instance.filterTransaction();
-
-//Chain.instance.getPchain();
-
-//console.log(Chain.instance);
-//console.log(JSON.stringify(Chain.instance,null,4));
 
 let chain = Chain.instance.chain;
 let transArr = Chain.instance.transArr;
