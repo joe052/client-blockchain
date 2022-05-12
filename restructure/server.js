@@ -72,7 +72,7 @@ app.post('/stuff',(req,res)=>{
   console.log('receiving request');
   console.log(req.body);
   const data = req.body;
-  let user = new User('banda');
+  let user = new User('joe');
   user.transact(data);
   status = true;
 });
