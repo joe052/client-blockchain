@@ -15,6 +15,10 @@ const Nodes = require('./nodes.js');
 const Chain = impots.mega;
 let status;
 
+//creating user
+let user = new User('joe');
+
+
 /*if(impots.chain.length !== 0){
   impots.chain = impots.chain[0];
 }*/
@@ -72,9 +76,9 @@ app.post('/stuff',(req,res)=>{
   console.log('receiving request');
   console.log(req.body);
   const data = req.body;
-  let user = new User('joe');
   user.transact(data);
   status = true;
+  return res.redirect("index.html");
 });
 
 //console.log(impots.chain);
