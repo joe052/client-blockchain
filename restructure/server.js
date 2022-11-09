@@ -61,7 +61,7 @@ app.get('/blockchain', (req, res) => {
 });
 
 app.get('/blockchains', (req, res) => {
-  chain.chainSender(res);
+  //chain.chainSender(res);
 });
 
 app.get('/transactions', (req, res) => {
@@ -75,6 +75,14 @@ app.get('/resolve', (req, res) => {
 
 app.get('/allNodes', (req, res) => {
   nodes.allNodes(res);
+});
+
+/*used to send the balance*/
+app.get('/balance', (req, res) => {
+  //get balance first
+  user.getBalance().then((balance) => {
+    res.send({ balance: balance });
+  });
 });
 
 app.post('/stuff', (req, res) => {
