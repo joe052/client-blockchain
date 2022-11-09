@@ -12,7 +12,7 @@ class User{
     //wall.transactLand(800,'brooooocio');
   }
 
-  transact(data){
+  transact(data,res){
     //const response = fetch('/stuff');
     //const data = response.json();
     const x = parseInt(data.size);
