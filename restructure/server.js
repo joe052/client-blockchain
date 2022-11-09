@@ -76,7 +76,7 @@ app.post('/stuff', (req, res) => {
   console.log('receiving request');
   console.log(req.body);
   const data = req.body;
-  user.transact(data);
+  user.transact(data,res);
   status = true;
   return res.redirect("index.html");
 });
