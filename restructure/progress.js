@@ -52,23 +52,23 @@ class Chain {
   static instance = new Chain();
 
   constructor() {
-    
+
     this.chain = [];
     this.transArr = [];
     this.difficulty = 3;
   }
-  
+
   /*-------------------------------complex----------------------------------------------------*/
 
   //get chain from api and push transaction
-  async getResolve(transaction){
+  async getResolve(transaction) {
     //get the chain first
     const newChain = await this.getPchain();
     console.log("recent blockchain update in use has blocks:");
     console.log(newChain.length);
 
     //adding transaction to acquired chain
-    const chain = this.addData(newChain,transaction); 
+    const chain = this.addData(newChain, transaction);
 
     //filtering transactions
     this.filterTransaction(chain);
@@ -82,19 +82,19 @@ class Chain {
     newChain = newChain[0];
     return newChain;
   }
-  
+
   /*-------------------------end of complex----------------------------------------------------*/
 
   //push new block with transaction to chain
-  addData(object,transaction) {
+  addData(object, transaction) {
     //const response = await fetch(url + '/resolve');
     let setup = [];
     setup.push(object);
-   
+
     //picking chain elements only #filtering
     setup = setup[0];
     //setup = setup[0];
-      
+
     console.log("This is the chain i fetched:");
     //console.log(setup);
 
@@ -102,7 +102,7 @@ class Chain {
     console.log(setup.length);
 
     //getting latest block of chain
-    const latest = setup[Object.keys(setup).length -1];
+    const latest = setup[Object.keys(setup).length - 1];
     //console.log("\nbelow lies the latest")
     //console.log(latest.hash);
 
@@ -114,17 +114,17 @@ class Chain {
     //console.log(setup);
     //console.log(Object.keys(setup).length);
     console.log(`setups length is ${setup.length}`);
-  
+
     //pushing update to blockchain
     if (Array.isArray(this.chain)) {
 
       //emptying previous array
-      while(this.chain.length){
+      while (this.chain.length) {
         this.chain.pop();
-      } 
+      }
 
       //pushing new array
-      for(const x in setup){
+      for (const x in setup) {
         const data = setup[x];
         this.chain.push(data);
       }
@@ -138,13 +138,13 @@ class Chain {
   }
 
   /*----------------test to get the pure chain only------------------------------------------------*/
-  
- //get chain
+
+  //get chain
   async getPchain() {
     const response = await fetch(url + '/resolve');
     const result = await response.json();
     //let bigChain = [];
-      //shared method addArray() in complex section
+    //shared method addArray() in complex section
     let allChain = this.addArray(result);
     console.log("available chains are:");
     console.log(allChain.length);
@@ -153,42 +153,42 @@ class Chain {
     return newChain;
   }
 
-  returner(){
+  returner() {
     //console.log("returning");
     return this.getPchain();
   }
-/*-----------------------end of test---------------------------------------------*/
-  
+  /*-----------------------end of test---------------------------------------------*/
+
   //get last block
   getLatestBlock() {
     return this.chain[this.chain.length - 1];
   }
-  
+
   getLatestBlock2(array) {
     return array[array.length - 1];
   }
 
   //filter transactions only from chain
-  filterTransaction(chain){
+  filterTransaction(chain) {
     const arrTrans = [];
     //const chain = await this.returner();
-    for(const block of chain){
+    for (const block of chain) {
       const trans = block.transaction;
       arrTrans.push(trans);
     }
     //const update = arrTrans[arrTrans.length - 1];
-    
+
     //emptying previous array
-    while(this.transArr.length){
+    while (this.transArr.length) {
       this.transArr.pop();
-    } 
+    }
 
     //pushing new array
-    for(const x in arrTrans){
+    for (const x in arrTrans) {
       const data = arrTrans[x];
       this.transArr.push(data);
     }
-    
+
     console.log(`transactions are ${this.transArr.length}`);
     return this.transArr;
   }
@@ -196,9 +196,9 @@ class Chain {
   //get balance
   async getBalanceOfAddress(address) {
     let balance = 0;
-    const chain =  await this.returner();
+    const chain = await this.returner();
     //console.log(chain);
-    
+
     for (const block of chain) {
       const trans = block.transaction;
       if (trans.owner === address) {
@@ -212,7 +212,54 @@ class Chain {
     //console.log(balance);
   }
 
-  async chainSender(res){
+  //update the chain periodically
+  async chainUpdate() {
+    //get the chain first
+    const newChain = await this.getPchain();
+    console.log("recent blockchain update in use has blocks:");
+    console.log(newChain.length);
+
+    //adding transaction to acquired chain
+    //const chain = this.addData(newChain,transaction);
+    let setup = [];
+    setup.push(newChain);
+    //picking chain elements only #filtering
+    setup = setup[0];
+    //setup = setup[0];
+    console.log("This is the chain i fetched:");
+    //console.log(setup);
+
+    //checking length of fetched chain
+    console.log(setup.length);
+
+    //pushing update to blockchain
+    if (Array.isArray(this.chain)) {
+
+      //emptying previous array
+      while (this.chain.length) {
+        this.chain.pop();
+      }
+
+      //pushing new array
+      for (const x in setup) {
+        const data = setup[x];
+        //arr.push(data);
+        this.chain.push(data);
+      }
+      //this.chain.push(arr);
+    }
+
+    //console.log(this.chain); 
+    console.log(`blockchain updated...new length is ${this.chain.length}`);
+
+    //filtering transactions
+    this.filterTransaction(this.chain);
+
+    return this.chain;
+  }
+
+
+  async chainSender(res) {
     //res.send(this.chain);
   }
 
@@ -226,14 +273,18 @@ class Wallet {
     //this.bal = bal;
   }
 
-  async transactLand(size, receiverPublicKey,res) {
+  async chainUpdate() {
+    Chain.instance.chainUpdate();
+  }
+
+  async transactLand(size, receiverPublicKey, res) {
     let availableLand;
     let minimum = this.minimum;
-       //check if chain is available
+    //check if chain is available
     const newChain = await Chain.instance.getPchain();
-    
-    availableLand =  await Chain.instance.getBalanceOfAddress(this.publicKey);
-    
+
+    availableLand = await Chain.instance.getBalanceOfAddress(this.publicKey);
+
     //console.log(availableLand);
 
     if (availableLand > 0 && availableLand >= size) {
@@ -251,7 +302,7 @@ class Wallet {
       }
 
     } else {
-     response = `\ninsufficient land size to initiate transaction from ${this.publicKey} available balance is ${availableLand}`;
+      response = `\ninsufficient land size to initiate transaction from ${this.publicKey} available balance is ${availableLand}`;
       console.log(response);
       res.send({ message: response });
     }
@@ -263,9 +314,9 @@ let chain = Chain.instance.chain;
 let transArr = Chain.instance.transArr;
 
 module.exports = {
-    chain: chain,
-    updateBlocks: blocks => {chain = blocks;},
-    transactions: transArr,
-    wallet: Wallet,
-    mega: Chain
+  chain: chain,
+  updateBlocks: blocks => { chain = blocks; },
+  transactions: transArr,
+  wallet: Wallet,
+  mega: Chain
 }

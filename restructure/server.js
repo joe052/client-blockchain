@@ -18,6 +18,11 @@ let status;
 //creating user
 let user = new User('izzoh');
 
+//method to refresh blockchain at a specified interval
+setInterval(() => {
+  user.update();
+}, 60000);
+
 
 /*if(impots.chain.length !== 0){
   impots.chain = impots.chain[0];
