@@ -18,7 +18,7 @@ class User{
     const x = parseInt(data.size);
     const y = data.key;
     let wall = new Wallet(this.publicKey);
-    wall.transactLand(x,y);
+    wall.transactLand(x,y,res);
   }
 
   update() {

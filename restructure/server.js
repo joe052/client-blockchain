@@ -90,8 +90,7 @@ app.post('/stuff', (req, res) => {
   console.log(req.body);
   const data = req.body;
   user.transact(data,res);
-  status = true;
-  return res.redirect("index.html");
+  status = true;  
 });
 
 //console.log(impots.chain);
