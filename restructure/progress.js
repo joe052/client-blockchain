@@ -226,7 +226,7 @@ class Wallet {
     //this.bal = bal;
   }
 
-  async transactLand(size, receiverPublicKey) {
+  async transactLand(size, receiverPublicKey,res) {
     let availableLand;
     let minimum = this.minimum;
        //check if chain is available
@@ -242,13 +242,18 @@ class Wallet {
         const transaction = new Transaction(this.publicKey, receiverPublicKey, size);
         //Chain.instance.getChain(transaction);
         Chain.instance.getResolve(transaction);
+        res.redirect("index.html");
         //console.log(transaction);
       } else {
-        console.log(`\nunable to initiate transaction from ${this.publicKey}...minimum transactable size is ${minimum}`);
+        response = `\nunable to initiate transaction from ${this.publicKey}...minimum transactable size is ${minimum}`;
+        console.log(response);
+        res.send({ message: response });
       }
 
     } else {
-      console.log(`\ninsufficient land size to initiate transaction from ${this.publicKey} available balance is ${availableLand}`);
+     response = `\ninsufficient land size to initiate transaction from ${this.publicKey} available balance is ${availableLand}`;
+      console.log(response);
+      res.send({ message: response });
     }
 
   }
