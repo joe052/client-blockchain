@@ -222,7 +222,7 @@ class Wallet {
 
   constructor(publicKey) {
     this.publicKey = publicKey;
-    this.minimum = 10;
+    this.minimum = 100;
     //this.bal = bal;
   }
 
