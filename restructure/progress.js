@@ -55,7 +55,7 @@ class Chain {
 
     this.chain = [];
     this.transArr = [];
-    this.difficulty = 3;
+    this.difficulty = 4;
   }
 
   /*-------------------------------complex----------------------------------------------------*/
